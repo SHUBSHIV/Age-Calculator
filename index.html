@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+
+  <!-- Poppins font for clean typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+   
+    :root{
+      --clr-primary-1:#9c1b1b; 
+      --clr-primary-2:#5b0000;
+      --clr-card-bg:rgba(255,255,255,0.15); 
+      --clr-border:rgba(255,255,255,0.35);
+      --clr-text:#fff;
+      --clr-success:#4df58d;
+      --clr-error:#ff6b6b;
+      --radius:1.25rem;
+      --shadow:0 20px 40px rgba(0,0,0,.25);
+      --transition:.3s ease;
+    }
+
+  
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family:"Poppins",sans-serif;
+      color:var(--clr-text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,var(--clr-primary-1),var(--clr-primary-2));
+      overflow:hidden;
+    }
+
+   
+    .blob{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(120px);
+      opacity:.6;
+      animation: float 20s alternate infinite;
+    }
+    .blob.one{width:500px;height:500px;background:#ffe1e1;top:-120px;left:-120px}
+    .blob.two{width:450px;height:450px;background:#7e0000;bottom:-150px;right:-150px}
+
+    @keyframes float{
+      from{transform:translateY(-30px)}
+      to{transform:translateY(60px)}
+    }
+
+  
+    .card{
+      position:relative;
+      z-index:10;
+      width:min(92vw,420px);
+      padding:3rem 2.25rem 2.75rem;
+      background:var(--clr-card-bg);
+      border:1px solid var(--clr-border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      animation:pop .7s ease;
+    }
+    @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+
+    h1{
+      font-size:1.85rem;
+      font-weight:600;
+      text-align:center;
+      margin-bottom:2rem;
+    }
+ 
+    label{
+      font-size:.95rem;
+      font-weight:500;
+    }
+
+    input[type="date"]{
+      width:100%;
+      margin-top:.5rem;
+      padding:.75rem 1rem;
+      font-size:1rem;
+      color:#222;
+      border-radius:.6rem;
+      border:1px solid rgba(0,0,0,.1);
+    }
+
+    button{
+      margin-top:1.75rem;
+      width:100%;
+      padding:.9rem 1rem;
+      font-size:1.05rem;
+      font-weight:600;
+      color:#fff;
+      background:linear-gradient(135deg,var(--clr-primary-1),var(--clr-primary-2));
+      border:none;
+      border-radius:.6rem;
+      cursor:pointer;
+      transition:var(--transition);
+    }
+    button:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,.3)}
+
+    
+    #result{
+      min-height:1.5em;
+      margin-top:2rem;
+      text-align:center;
+      font-size:1.15rem;
+      font-weight:500;
+      transition:var(--transition);
+      word-spacing:.1em;
+    }
+    .success{color:var(--clr-success)}
+    .error{color:var(--clr-error)}
+
+   
+    @media(max-width:480px){
+      .card{padding:2.25rem 1.5rem}
+      h1{font-size:1.6rem}
+    }
+  </style>
+</head>
+<body>
+
+ 
+  <span class="blob one"></span>
+  <span class="blob two"></span>
+
+  
+  <section class="card">
+    <h1>Age Calculator</h1>
+
+    <div class="form-group">
+      <label for="dob">Select your Date of Birth</label>
+      <input type="date" id="dob">
+    </div>
+
+    <button id="calcBtn">Calculate</button>
+
+    <p id="result"></p>
+  </section>
+
+  <script>
+    const dobEl    = document.getElementById('dob');
+    const resultEl = document.getElementById('result');
+    const btn      = document.getElementById('calcBtn');
+
+    btn.addEventListener('click', () => {
+      const dobValue = dobEl.value;
+      if(!dobValue){
+        show('❗ Please pick a date.', 'error');
+        return;
+      }
+
+      const birth = new Date(dobValue);
+      const today = new Date();
+
+      let years  = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth()    - birth.getMonth();
+      let days   = today.getDate()     - birth.getDate();
+
+      if(days < 0){
+        months--;
+        const daysInPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+        days += daysInPrevMonth;
+      }
+      if(months < 0){
+        years--;
+        months += 12;
+      }
+
+      show(`🎉 <span>${years}</span> yrs <span>${months}</span> mos <span>${days}</span> days`, 'success');
+    });
+
+    function show(message, type){
+      resultEl.innerHTML = message;
+      resultEl.className = type;
+    }
+  </script>
+</body>
+</html>
